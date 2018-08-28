@@ -68,11 +68,15 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         };
-        adapter.setInitPosition(10);
-        adapter.setSwipeRefreshEnabled(true);
+        adapter.setSwipeRefreshEnabled(false);
+        adapter.setTitleHeight(40);
+        adapter.setTitleWidth(100);
+        adapter.setTitleColor("#4d000000");
+        adapter.setRowColor("#4d000000");
+        adapter.setColumnColor("#00000000");
         adapter.setRowDataList(rowDataList);// must have
-        adapter.setTitle("example");// optional
-        adapter.setOnRefreshListener(new CustomRefreshListener());// optional
+        adapter.setTitle("序号");// optional
+//        adapter.setOnRefreshListener(new CustomRefreshListener());// optional
         adapter.setContentDataList(contentList);// must have
         adapter.setItemWidthList(itemWidthList);// must have
         adapter.setItemHeight(40);// optional, dp
@@ -113,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
         lv_content = findViewById(R.id.id_lv_content);
 
         //设置listView为多选模式，长按自动触发
-        lv_content.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        lv_content.setMultiChoiceModeListener(new MultiChoiceModeCallback());
+//        lv_content.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+//        lv_content.setMultiChoiceModeListener(new MultiChoiceModeCallback());
 
         //listView的点击监听
         lv_content.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -164,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void initItemWidthList() {
         for (int i = 0; i < columSize; i++) {
-            itemWidthList.add(100);
+            itemWidthList.add(200);
         }
     }
 

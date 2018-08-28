@@ -1,8 +1,10 @@
 package sysu.zyb.panellistlibrary.defaultcontent;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,20 +32,20 @@ import sysu.zyb.panellistlibrary.R;
 public class DefaultContentAdapter extends ArrayAdapter<List<String>> {
 
     private int contentItemSize;
-
     private List<Integer> itemWidthList;
-
     private ListView lv_content;
     private int itemHeight;
+    private String textColor;
 
     public DefaultContentAdapter(@NonNull Context context, int resource,
                                  @NonNull List<List<String>> objects, List<Integer> itemWidthList,
-                                 int itemHeight, ListView lv_content) {
+                                 int itemHeight, String textColor, ListView lv_content) {
         super(context, resource, objects);
         this.contentItemSize = itemWidthList.size();
         this.itemWidthList = itemWidthList;
         this.lv_content = lv_content;
         this.itemHeight = itemHeight;
+        this.textColor = textColor;
     }
 
     @Override
@@ -90,6 +92,8 @@ public class DefaultContentAdapter extends ArrayAdapter<List<String>> {
             CheckableLinearLayout layout = (CheckableLinearLayout) view;
             for (int i = 0; i < contentItemSize; i++) {
                 TextView item = (TextView) View.inflate(getContext(), R.layout.column_content_item, null);
+                if (!TextUtils.isEmpty(textColor))
+                    item.setTextColor(Color.parseColor(textColor));
                 try {
                     item.setWidth(itemWidthList.get(i));
                 } catch (Exception e) {
