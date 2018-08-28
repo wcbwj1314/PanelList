@@ -534,7 +534,14 @@ public abstract class AbstractPanelListAdapter {
             rowItem.setText(rowDataList1.get(i));//设置文字
             rowItem.setTextColor(Color.parseColor(textColor));
             rowItem.getPaint().setFakeBoldText(true);
-            rowItem.setWidth(widthArray[i]);//设置宽度
+            if (i == rowCount - 1) {
+                //最后一个将下面内容列表滑动条的宽度加到宽度里，并设置到右边padding,使其和下面的内容保持居中对齐
+                rowItem.setPadding(0, 0, lv_content.getVerticalScrollbarWidth(), 0);
+                rowItem.setWidth(widthArray[i] + lv_content.getVerticalScrollbarWidth());//设置宽度
+            } else {
+                rowItem.setWidth(widthArray[i]);//设置宽度
+            }
+
             rowItem.setHeight(titleHeight);//设置高度
             rowItem.setGravity(Gravity.CENTER);
             ll_row.addView(rowItem);
