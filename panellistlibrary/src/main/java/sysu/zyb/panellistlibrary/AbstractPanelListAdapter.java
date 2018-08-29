@@ -446,6 +446,8 @@ public abstract class AbstractPanelListAdapter {
         lv_column.setBackgroundColor(Color.parseColor(columnColor));
         lv_column.setId(View.generateViewId());
         lv_column.setVerticalScrollBarEnabled(false);//去掉滚动条
+        lv_column.setOverScrollMode(View.OVER_SCROLL_NEVER);//去除滑动到边缘时出现的阴影
+        //去掉选择效果
         lv_column.setSelector(new ColorDrawable(0x00000000));
         lv_column.setCacheColorHint(0x00000000);
 //        lv_column.setDivider(context.getResources().getDrawable(R.drawable.column_item_divider));
