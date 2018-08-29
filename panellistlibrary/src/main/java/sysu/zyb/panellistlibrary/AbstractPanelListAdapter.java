@@ -80,6 +80,8 @@ public abstract class AbstractPanelListAdapter {
     private Drawable rowDivider;
     private Drawable columnDivider;
 
+    private int columnDividerHeight = -1;
+
     /**
      * 默认关闭下拉刷新
      */
@@ -202,6 +204,13 @@ public abstract class AbstractPanelListAdapter {
      */
     public void setColumnDivider(Drawable columnDivider) {
         this.columnDivider = columnDivider;
+    }
+
+    /**
+     * 纵向表头的分割线高度,单位dp
+     */
+    public void setColumnDividerHeight(int columnDividerHeight) {
+        this.columnDividerHeight = columnDividerHeight;
     }
 
     /**
@@ -483,6 +492,8 @@ public abstract class AbstractPanelListAdapter {
             if (columnDivider != null) {
                 lv_column.setDivider(columnDivider);
             }
+            if (columnDividerHeight != -1)
+                lv_column.setDividerHeight(dp2px(columnDividerHeight));
         }
     }
 
