@@ -2,6 +2,7 @@ package sysu.zyb.panellistlibrary;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -445,6 +446,8 @@ public abstract class AbstractPanelListAdapter {
         lv_column.setBackgroundColor(Color.parseColor(columnColor));
         lv_column.setId(View.generateViewId());
         lv_column.setVerticalScrollBarEnabled(false);//去掉滚动条
+        lv_column.setSelector(new ColorDrawable(0x00000000));
+        lv_column.setCacheColorHint(0x00000000);
 //        lv_column.setDivider(context.getResources().getDrawable(R.drawable.column_item_divider));
         RelativeLayout.LayoutParams lp_lv_column = new RelativeLayout.LayoutParams(titleWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         lp_lv_column.addRule(RelativeLayout.BELOW, tv_title.getId());
