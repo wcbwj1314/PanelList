@@ -66,7 +66,6 @@ public abstract class AbstractPanelListAdapter {
      */
     private int titleWidth = 150;
     private int titleHeight = 100;
-    private int columnItemHeight = 100;
 
     private String title = "";
     private int titleBackgroundResource;
@@ -87,10 +86,6 @@ public abstract class AbstractPanelListAdapter {
      * 默认关闭下拉刷新
      */
     private boolean swipeRefreshEnable = false;
-    /**
-     * 标志位，是否使用了默认的column实现
-     */
-    private boolean defaultColumn = false;
 
     private int initPosition = 0;//列表显示的初始值，默认第一条数据显示在最上面
 
@@ -372,24 +367,32 @@ public abstract class AbstractPanelListAdapter {
     public void notifyDataSetChanged() {
         // 先刷新lv_content的数据，然后根据判断决定是否要刷新表头的数据
         contentAdapter.notifyDataSetChanged();
-        if (defaultColumn) {
-            // 最好是让columnList跟着contentList变，不要new对象
-            // 所以要获得contentList的新长度,即要获得contentList对象
-            int newLength = contentAdapter.getCount();
-            if (newLength < columnDataList.size()) {
-                //删除了部分数据
-                //从尾部开始删除元素，直到长度和contentList相同
-                while (columnDataList.size() != newLength) {
-                    columnDataList.remove(columnDataList.size() - 1);
-                }
-            } else {
-                //增加了部分数据
-                while (columnDataList.size() != newLength) {
-                    columnDataList.add(String.valueOf(columnDataList.size() + 1));
-                }
+
+        if (columnDataList == null) {
+            columnDataList = getColumnDataList();
+        }
+        // 最好是让columnList跟着contentList变，不要new对象
+        // 所以要获得contentList的新长度,即要获得contentList对象
+        int newLength = contentAdapter.getCount();
+        if (newLength < columnDataList.size()) {
+            //删除了部分数据
+            //从尾部开始删除元素，直到长度和contentList相同
+            while (columnDataList.size() != newLength) {
+                columnDataList.remove(columnDataList.size() - 1);
             }
+        } else {
+            //增加了部分数据
+            while (columnDataList.size() != newLength) {
+                columnDataList.add(String.valueOf(columnDataList.size() + 1));
+            }
+        }
+
+        if (columnAdapter == null){
+            initColumnLayout();
+        }else {
             columnAdapter.notifyDataSetChanged();
         }
+
     }
 
 
@@ -491,15 +494,12 @@ public abstract class AbstractPanelListAdapter {
     }
 
     private void initColumnLayout() {
-        if (ll_contentItem != null) {
-            columnItemHeight = ll_contentItem.getHeight();
-            lv_column.setAdapter(getColumnAdapter());
-            if (columnDivider != null) {
-                lv_column.setDivider(columnDivider);
-            }
-            if (columnDividerHeight != -1)
-                lv_column.setDividerHeight(dp2px(columnDividerHeight));
+        lv_column.setAdapter(getColumnAdapter());
+        if (columnDivider != null) {
+            lv_column.setDivider(columnDivider);
         }
+        if (columnDividerHeight != -1)
+            lv_column.setDividerHeight(dp2px(columnDividerHeight));
     }
 
 
@@ -593,7 +593,6 @@ public abstract class AbstractPanelListAdapter {
      */
     private List<String> getColumnDataList() {
         if (columnDataList == null) {
-            defaultColumn = true;
             columnDataList = new ArrayList<>();
             int contentDataCount = contentAdapter.getCount();
             for (int i = 1; i <= contentDataCount; i++) {
@@ -624,7 +623,7 @@ public abstract class AbstractPanelListAdapter {
      */
     public BaseAdapter getColumnAdapter() {
         if (columnAdapter == null) {
-            columnAdapter = new ColumnAdapter(context, android.R.layout.simple_list_item_1, getColumnDataList());
+            columnAdapter = new ColumnAdapter(context, android.R.layout.simple_list_item_1);
         }
         return columnAdapter;
     }
@@ -703,12 +702,10 @@ public abstract class AbstractPanelListAdapter {
     private class ColumnAdapter extends ArrayAdapter {
 
         private int resourceId;
-        private List<String> columnDataList;
 
-        ColumnAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<String> objects) {
-            super(context, resource, objects);
+        ColumnAdapter(@NonNull Context context, @LayoutRes int resource) {
+            super(context, resource, getColumnDataList());
             resourceId = resource;
-            columnDataList = objects;
         }
 
         @Override
@@ -723,7 +720,7 @@ public abstract class AbstractPanelListAdapter {
 
             if (convertView == null) {
                 view = new TextView(context);
-                ((TextView) view).setHeight(columnItemHeight);
+                ((TextView) view).setHeight(itemHeight);
                 //如果以上设置高度的代码无法生效，则使用下面的方式设置
 //                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(titleWidth,columnItemHeight);
 //                view.setLayoutParams(lp);
@@ -732,7 +729,7 @@ public abstract class AbstractPanelListAdapter {
                 view = convertView;
             }
 
-            ((TextView) view).setText(columnDataList.get(position));
+            ((TextView) view).setText(getColumnDataList().get(position));
             ((TextView) view).setTextColor(Color.parseColor(textColor));
             ((TextView) view).setTextSize(15);
             view.setPadding(0, 0, 0, 0);
